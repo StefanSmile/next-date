@@ -45,10 +45,10 @@ export function Intro() {
       </p>
       <SignUpForm />
       <div className="mt-8 flex flex-wrap justify-center gap-x-1 gap-y-3 sm:gap-x-2">
-        <IconLink href="#" icon={BookIcon} className="flex-none">
+        <IconLink href="https://github.com/StefanSmile/next-date/blob/master/README.md" icon={BookIcon} className="flex-none">
           Documentation
         </IconLink>
-        <IconLink href="#" icon={GitHubIcon} className="flex-none">
+        <IconLink href="https://github.com/StefanSmile/next-date" icon={GitHubIcon} className="flex-none">
           GitHub
         </IconLink>
       </div>
