@@ -1,12 +1,12 @@
 'use client'
-import { useId } from 'react'
+import { useEffect, useId } from 'react'
 import { Button } from '@/components/Button'
 import { Fragment, useState } from 'react'
 import { Transition } from '@headlessui/react'
 import { CheckCircleIcon } from '@heroicons/react/24/outline'
 import { XMarkIcon } from '@heroicons/react/20/solid'
 
-import { doc, setDoc } from "firebase/firestore";
+import { Timestamp, doc, setDoc } from "firebase/firestore";
 import { db } from "../config";
 
 export function SignUpForm() {
@@ -15,6 +15,10 @@ export function SignUpForm() {
   const [show, setShow] = useState(false)
   let message = "Successfully saved number!"
   let description = "I'm looking forward to meeting you again"
+
+  function getRandomInt(max) {
+    return Math.floor(Math.random() * max);
+  }
 
   const handleInput = (e) => {
     const fieldValue = e.target.value;
@@ -26,23 +30,34 @@ export function SignUpForm() {
   }
 
   const handleForm = async () => {
-    console.log(db)
-    // Add a new document in collection "cities"
-    try {
-      await setDoc(doc(db, "numbers", "number"), {
-        number: number,
-      })
-    } catch (error) {
-      message = "Failed to save number!"
-      description = "oops"
-      console.log(error)
+    console.log(number)
+    if (number !== "" && number.fieldValue !== "") {
+      try {
+        await setDoc(doc(db, "numbers", "number-" + getRandomInt(999999999)), {
+          number: number,
+          time: Timestamp.now()
+        })
+      } catch (error) {
+        message = "Failed to save number!"
+        description = "oops"
+        console.log(error)
+      }
+      setShow(true)
     }
-    setShow(true)
   }
+
+  const handleSubmit = (event) => {
+    event.preventDefault();
+  }
+
+  useEffect(() => {
+    const form = document.getElementById("form");
+    form.addEventListener('submit', handleSubmit);
+  });
 
   return (
     <>
-      <div className="relative isolate mt-8 flex items-center pr-1">
+      <form className="relative isolate mt-8 flex items-center pr-1" id='form'>
         <label htmlFor={id} className="sr-only">
           Phone number
         </label>
@@ -55,12 +70,12 @@ export function SignUpForm() {
           className="peer w-0 flex-auto bg-transparent px-4 py-2.5 text-base text-white placeholder:text-gray-500 focus:outline-none sm:text-[0.8125rem]/6"
           onChange={handleInput}
         />
-        <Button arrow onClick={handleForm}>
+        <Button arrow type="submit" onClick={handleForm}>
           Sign up
         </Button>
         <div className="absolute inset-0 -z-10 rounded-lg transition peer-focus:ring-4 peer-focus:ring-sky-300/15" />
         <div className="absolute inset-0 -z-10 rounded-lg bg-white/2.5 ring-1 ring-white/15 transition peer-focus:ring-sky-300" />
-      </div>
+      </form>
 
       <div
         aria-live="assertive"

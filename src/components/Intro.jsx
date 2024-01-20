@@ -3,6 +3,8 @@ import Link from 'next/link'
 import { IconLink } from '@/components/IconLink'
 import { Logo } from '@/components/Logo'
 import { SignUpForm } from '@/components/SignUpForm'
+import { doc, getDoc } from "firebase/firestore";
+import { db } from "../config";
 
 function BookIcon(props) {
   return (
@@ -20,15 +22,23 @@ function GitHubIcon(props) {
   )
 }
 
-function XIcon(props) {
+function InstaIcon() {
   return (
-    <svg viewBox="0 0 16 16" aria-hidden="true" fill="currentColor" {...props}>
-      <path d="M9.51762 6.77491L15.3459 0H13.9648L8.90409 5.88256L4.86212 0H0.200195L6.31244 8.89547L0.200195 16H1.58139L6.92562 9.78782L11.1942 16H15.8562L9.51728 6.77491H9.51762ZM7.62588 8.97384L7.00658 8.08805L2.07905 1.03974H4.20049L8.17706 6.72795L8.79636 7.61374L13.9654 15.0075H11.844L7.62588 8.97418V8.97384Z" />
+    <svg viewBox="0 0 48 48" width="24px" height="24px">
+      <path fill="none" stroke="#000" strokeLinecap="round" strokeLinejoin="round" strokeMiterlimit="10" strokeWidth="3" d="M41.5,21.1v-4.6c0-5.5-4.5-10-10-10h-15c-5.5,0-10,4.5-10,10v3" /><path fill="none" stroke="#000" strokeLinecap="round" strokeLinejoin="round" strokeMiterlimit="10" strokeWidth="3" d="M6.5,25.6v5.9c0,5.5,4.5,10,10,10h15c5.5,0,10-4.5,10-10v-4.6" /><path fill="none" stroke="#000" strokeMiterlimit="10" strokeWidth="3" d="M24,15.5c-4.7,0-8.5,3.8-8.5,8.5s3.8,8.5,8.5,8.5s8.5-3.8,8.5-8.5S28.7,15.5,24,15.5z" /><path d="M34,12c-1.1,0-2,0.9-2,2s0.9,2,2,2s2-0.9,2-2S35.1,12,34,12z" />
     </svg>
   )
 }
 
-export function Intro() {
+export async function Intro() {
+  const nameDoc = await getDoc(doc(db, "numbers", "name"));
+  let name = ""
+  if (!nameDoc.exists) {
+    name = "beautiful"
+  } else {
+    name = nameDoc.data().name;
+  }
+
   return (
     <>
       <div className='w-5'>
@@ -37,7 +47,7 @@ export function Intro() {
         </Link>
       </div>
       <h1 className="mt-14 font-display text-4xl/tight font-light text-white">
-        Hi Antonia!{' '}
+        Hi {name}!{' '}
         <span className="text-sky-300">I think you're cute</span>
       </h1>
       <p className="mt-4 text-sm/6 text-gray-300">
@@ -59,8 +69,8 @@ export function Intro() {
 export function IntroFooter() {
   return (
     <p className="flex items-baseline gap-x-2 text-[0.8125rem]/6 text-gray-500">
-      Brought to you by{' '}
-      <IconLink href="https://www.instagram.com/stefan.smile/" compact>
+      Brought to you by{''}
+      <IconLink href="https://www.instagram.com/stefan.smile/" icon={InstaIcon} compact>
         Stefan Smiljanic
       </IconLink>
     </p>
